@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sutza – 숫자 변환 퍼즐</title>
+  <meta name="description" content="숨겨진 변환 규칙을 추론해 정답 숫자를 만드는 입력값을 찾는 숫자 퍼즐 게임" />
+  <meta property="og:title" content="sutza – 숫자 변환 퍼즐" />
+  <meta property="og:description" content="숨겨진 변환 규칙을 추론해 정답 숫자를 만드는 입력값을 찾는 숫자 퍼즐 게임" />
+  <meta property="og:image" content="icon.png" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #121213;
+      --surface: #1e1e1f;
+      --border: #3a3a3c;
+      --text: #ffffff;
+      --muted: #818384;
+      --green: #538d4e;
+      --green-bg: #1a3018;
+      --red: #e63946;
+      --gold: #c9b15e;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Hero ── */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 64px 24px 48px;
+      gap: 20px;
+    }
+
+    .hero-icon {
+      width: 96px;
+      height: 96px;
+      border-radius: 22px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    .hero-title {
+      font-size: clamp(36px, 10vw, 56px);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .hero-desc {
+      font-size: clamp(14px, 3.5vw, 17px);
+      color: var(--muted);
+      max-width: 340px;
+      line-height: 1.7;
+    }
+
+    .hero-badges {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 4px;
+    }
+
+    .badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    /* ── Screenshots ── */
+    .screenshots {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 0 24px 56px;
+      flex-wrap: wrap;
+    }
+
+    .phone-frame {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      width: min(280px, 56vw);
+    }
+
+    .phone-frame img {
+      width: 100%;
+      display: block;
+    }
+
+    /* ── Features ── */
+    .features {
+      padding: 0 24px 56px;
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .features-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .feature-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .feature-body {}
+
+    .feature-name {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .feature-name.green { color: var(--green); }
+    .feature-name.gold  { color: var(--gold); }
+    .feature-name.red   { color: var(--red); }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── Download ── */
+    .download {
+      padding: 0 24px 64px;
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .download-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .download-btns {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .download-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      transition: border-color 0.15s;
+      cursor: pointer;
+    }
+
+    .download-btn:hover { border-color: var(--green); }
+    .download-btn .store-name { font-size: 12px; color: var(--muted); display: block; }
+    .download-btn .store-label { font-size: 15px; font-weight: 700; }
+
+    .coming-soon {
+      font-size: 12px;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    footer p {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    footer a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <section class="hero">
+    <img class="hero-icon" src="icon.png" alt="sutza 아이콘" />
+    <h1 class="hero-title">SUTZA</h1>
+    <p class="hero-desc">
+      숨겨진 변환 규칙을 추론해<br>
+      정답 숫자를 만드는 입력값을 찾으세요.
+    </p>
+    <div class="hero-badges">
+      <span class="badge">숫자 퍼즐</span>
+      <span class="badge">데일리 챌린지</span>
+      <span class="badge">무료</span>
+    </div>
+  </section>
+
+  <!-- Screenshots -->
+  <section class="screenshots">
+    <div class="phone-frame">
+      <img src="screenshot1.png" alt="홈 화면" />
+    </div>
+    <div class="phone-frame">
+      <img src="screenshot2.png" alt="게임 플레이 화면" />
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <p class="features-title">특징</p>
+
+    <div class="feature-card">
+      <span class="feature-icon">📅</span>
+      <div class="feature-body">
+        <p class="feature-name gold">데일리 모드</p>
+        <p class="feature-desc">매일 오전 6시 새로운 퍼즐이 출제됩니다. 하루 1회, 오늘의 문제에 도전하세요.</p>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">🏃</span>
+      <div class="feature-body">
+        <p class="feature-name green">연습 모드</p>
+        <p class="feature-desc">Easy · Normal · Hard 세 가지 난이도로 자유롭게 연습하세요. 하루 3회 제공됩니다.</p>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">🔢</span>
+      <div class="feature-body">
+        <p class="feature-name red">변환 규칙 추론</p>
+        <p class="feature-desc">전체 자리 변환, 순서 재배치, 특정 자리 변환 등 다양한 규칙이 숨겨져 있습니다. 시도 결과를 분석해 규칙을 좁혀가세요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download -->
+  <section class="download">
+    <p class="download-title">다운로드</p>
+    <div class="download-btns">
+      <div class="download-btn">
+        <div>
+          <span class="store-name">ONE Store</span>
+          <span class="store-label">원스토어</span>
+        </div>
+      </div>
+      <div class="download-btn">
+        <div>
+          <span class="store-name">apps in toss</span>
+          <span class="store-label">앱인토스</span>
+        </div>
+      </div>
+    </div>
+    <p class="coming-soon">* 출시 준비 중입니다.</p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      <a href="privacy.html">개인정보처리방침</a>
+    </p>
+    <p>© 2026 미로둘셋 (정성엽 · SungYub Jung)</p>
+  </footer>
+
+</body>
+</html>
